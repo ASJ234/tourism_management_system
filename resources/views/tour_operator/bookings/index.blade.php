@@ -1,0 +1,1 @@
+<td>{{ $bookings->user->full_name }}</td> 
