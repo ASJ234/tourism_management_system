@@ -8,11 +8,14 @@ use App\Http\Controllers\TourOperator\TourOperatorController;
 use App\Http\Controllers\Tourist\BookingController;
 use App\Http\Controllers\Tourist\PaymentController;
 use App\Http\Controllers\Tourist\DashboardController;
+use App\Http\Controllers\landingpageController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/landingpage/contact', [landingpageController::class,'contact'])->name('landingpage.contact');
+Route::get('/landingpage/about', [landingpageController::class,'about'])->name('landingpage.about');
 Route::get('/dashboard', function () {
     $user = auth()->user();
     

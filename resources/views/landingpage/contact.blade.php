@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Tourism Management System</title>
+        <title>Contact</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <style>
             body {
@@ -246,24 +246,20 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="slider">
-                <div class="slide active" style="background-image: url('{{ asset('images/slider/aeroplane.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/animal 1.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/waterfall.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/tourist 1.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/animal2.jpg') }}')"></div>
-            </div>
-            <div class="hero-content">
-                <h1>Discover Amazing Destinations</h1>
-                <p>Explore the world's most beautiful places with our curated tourism packages. From exotic beaches to historic landmarks, we've got your perfect getaway covered.</p>
-                <p>We have many touuur packages for our customers. Come and join our travers for all over the world in diferent places. </p>
-                <a href="{{ route('register') }}" class="cta-button">Start Your Journey</a>
+        <!-- Contact Section -->
+        <section id="contact" class="cta">
+            <h2>Get in Touch</h2>
+            <p>Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <form style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="text" placeholder="Your Name" style="padding: 0.8rem; border: none; border-radius: 5px;">
+                    <input type="email" placeholder="Your Email" style="padding: 0.8rem; border: none; border-radius: 5px;">
+                    <textarea placeholder="Your Message" style="padding: 0.8rem; border: none; border-radius: 5px; height: 150px;"></textarea>
+                    <button type="submit" class="cta-button" style="border: none; cursor: pointer;">Send Message</button>
+                </form>
             </div>
         </section>
 
-        
         <!-- Footer -->
         <footer class="footer">
         <div class="social-links">

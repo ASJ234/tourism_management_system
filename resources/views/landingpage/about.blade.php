@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Tourism Management System</title>
+        <title>About us</title>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <style>
             body {
@@ -246,20 +246,22 @@
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="slider">
-                <div class="slide active" style="background-image: url('{{ asset('images/slider/aeroplane.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/animal 1.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/waterfall.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/tourist 1.jpg') }}')"></div>
-                <div class="slide" style="background-image: url('{{ asset('images/slider/animal2.jpg') }}')"></div>
-            </div>
-            <div class="hero-content">
-                <h1>Discover Amazing Destinations</h1>
-                <p>Explore the world's most beautiful places with our curated tourism packages. From exotic beaches to historic landmarks, we've got your perfect getaway covered.</p>
-                <p>We have many touuur packages for our customers. Come and join our travers for all over the world in diferent places. </p>
-                <a href="{{ route('register') }}" class="cta-button">Start Your Journey</a>
+        <!-- About Section -->
+        <section id="about" class="features">
+            <h2 style="text-align: center; margin-bottom: 3rem; color: #2c3e50;">About Us</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Our Story</h3>
+                    <p>Founded in 2024, we've been helping travelers explore the world's most beautiful destinations with carefully curated experiences.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Our Mission</h3>
+                    <p>To provide exceptional travel experiences that inspire, educate, and create lasting memories for our clients.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Our Vision</h3>
+                    <p>To be the leading tourism management system, making travel accessible and enjoyable for everyone.</p>
+                </div>
             </div>
         </section>
 
