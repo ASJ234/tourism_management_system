@@ -165,12 +165,8 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('tour_operator.packages.index') }}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left"></i> Back to Packages
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save"></i> Create Package
-                            </button>
+                            <a href="{{ route('tour_operator.packages.index') }}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Package</button>
                         </div>
                     </form>
                 </div>
@@ -178,4 +174,22 @@
         </div>
     </div>
 </div>
-@endsection 
+
+@endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Date validation
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+
+    startDateInput.addEventListener('change', function() {
+        endDateInput.min = this.value;
+        if (endDateInput.value && endDateInput.value < this.value) {
+            endDateInput.value = this.value;
+        }
+    });
+});
+</script>
+@endpush 

@@ -82,18 +82,46 @@ class TourOperatorController extends Controller
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
             'total_available_slots' => 'required|integer|min:1',
-            'destination_id' => 'required|exists:destinations,destination_id'
+            'destination_id' => 'required|exists:destinations,destination_id',
+            'images' => 'required|array|min:1',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'captions' => 'array',
+            'captions.*' => 'nullable|string|max:255',
+            'primary_image' => 'required|integer|min:0'
         ]);
 
-        $package = new TourPackage();
-        $package->fill($validated);
-        $package->created_by = auth()->id();
-        $package->is_active = true;
-        $package->save();
+        try {
+            DB::beginTransaction();
 
+            $package = new TourPackage();
+            $package->fill($validated);
+            $package->created_by = auth()->id();
+            $package->is_active = true;
+            $package->save();
 
-        return redirect()->route('tour_operator.packages.show', $package)
-            ->with('success', 'Package created successfully!');
+            // Handle image uploads
+            foreach ($request->file('images') as $index => $image) {
+                $path = $image->store('tour-packages', 'public');
+                
+                $isPrimary = ($index == $request->primary_image);
+                
+                $package->images()->create([
+                    'image_path' => $path,
+                    'caption' => $request->captions[$index] ?? null,
+                    'is_primary' => $isPrimary
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('tour_operator.packages.show', $package)
+                ->with('success', 'Package created successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Failed to create package: ' . $e->getMessage())
+                        ->withInput();
+        }
     }
 
     public function showPackage(TourPackage $package)

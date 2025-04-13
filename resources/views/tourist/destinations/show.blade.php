@@ -152,62 +152,93 @@
         background: #374151;
     }
 
-    /* Modal styles */
+    /* Updated Modal Styles */
     .modal {
         display: none;
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.9);
-        z-index: 1000;
-        padding: 2rem;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        overflow: hidden;
     }
 
     .modal.active {
-        display: flex;
-        align-items: center;
+        display: flex !important;
         justify-content: center;
+        align-items: center;
     }
 
     .modal-content {
-        max-width: 90%;
-        max-height: 90vh;
         position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: 90%;
+        max-width: 1200px;
     }
 
     .modal-image {
         max-width: 100%;
         max-height: 90vh;
         object-fit: contain;
+        border-radius: 4px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .modal-close {
         position: absolute;
-        top: -2rem;
-        right: -2rem;
-        color: white;
-        font-size: 2rem;
+        top: -40px;
+        right: 0;
+        color: #fff;
+        font-size: 35px;
+        font-weight: bold;
         cursor: pointer;
+        z-index: 10000;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        transition: all 0.3s ease;
     }
 
-    .modal-nav {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        color: white;
-        font-size: 2rem;
+    .modal-close:hover {
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
+    }
+
+    .gallery-item {
         cursor: pointer;
-        padding: 1rem;
+        transition: all 0.3s ease;
     }
 
-    .modal-prev {
-        left: 2rem;
+    .gallery-item:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .modal-next {
-        right: 2rem;
+    .gallery-overlay {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .gallery-overlay i {
+        font-size: 24px;
+        color: white;
+    }
+
+    .gallery-item:hover .gallery-overlay {
+        opacity: 1;
     }
 </style>
 @endsection
@@ -259,16 +290,16 @@
                 <div class="gallery-section">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="section-title mb-0">Photo Gallery</h2>
-                        <button class="btn btn-primary" onclick="openGallery(0)">
+                        <button class="btn btn-primary" onclick="openModal('{{ asset($destination->images->first()->image_path) }}')">
                             View All Images
                         </button>
                     </div>
                     <div class="gallery-grid">
-                        @foreach($destination->images as $index => $image)
-                            <div class="gallery-item" onclick="openGallery({{ $index }})">
-                                <img src="{{ asset($image->image_path) }}" alt="Destination Image">
+                        @foreach($destination->images as $image)
+                            <div class="gallery-item" onclick="openModal('{{ asset($image->image_path) }}')">
+                                <img src="{{ asset($image->image_path) }}" alt="Gallery image of {{ $destination->name }}">
                                 <div class="gallery-overlay">
-                                    <div class="text-sm">Click to view</div>
+                                    <i class="fas fa-expand"></i>
                                 </div>
                             </div>
                         @endforeach
@@ -277,75 +308,51 @@
             @endif
 
             <div class="mt-6">
-                <a href="{{ route('tourist.destinations') }}" class="btn-back">
+                <a href="{{ route('tourist.destinations.index') }}" class="btn-back">
                     <i class="fas fa-arrow-left"></i>
                     Back to Destinations
                 </a>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Image Gallery Modal -->
-<div class="modal" id="galleryModal">
-    <div class="modal-content">
-        <span class="modal-close" onclick="closeGallery()">&times;</span>
-        <img src="" alt="Gallery Image" class="modal-image" id="modalImage">
-        <div class="modal-nav modal-prev" onclick="prevImage()">
-            <i class="fas fa-chevron-left"></i>
-        </div>
-        <div class="modal-nav modal-next" onclick="nextImage()">
-            <i class="fas fa-chevron-right"></i>
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <img id="modalImage" class="modal-image" src="" alt="Enlarged destination image">
         </div>
     </div>
 </div>
-
 @endsection
 
-@push('scripts')
+@section('scripts')
 <script>
-    let currentImageIndex = 0;
-    const images = @json($destination->images->pluck('image_path'));
+function openModal(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImage');
+    
+    modalImg.src = imageSrc;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
+}
 
-    function openGallery(index) {
-        currentImageIndex = index;
-        const modal = document.getElementById('galleryModal');
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = "{{ asset('') }}" + images[currentImageIndex];
-        modal.classList.add('active');
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto'; // Re-enable scrolling
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
     }
+});
 
-    function closeGallery() {
-        const modal = document.getElementById('galleryModal');
-        modal.classList.remove('active');
-    }
-
-    function nextImage() {
-        currentImageIndex = (currentImageIndex + 1) % images.length;
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = "{{ asset('') }}" + images[currentImageIndex];
-    }
-
-    function prevImage() {
-        currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-        const modalImage = document.getElementById('modalImage');
-        modalImage.src = "{{ asset('') }}" + images[currentImageIndex];
-    }
-
-    // Close modal when clicking outside
-    document.getElementById('galleryModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeGallery();
-        }
-    });
-
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (!document.getElementById('galleryModal').classList.contains('active')) return;
-        
-        if (e.key === 'ArrowRight') nextImage();
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'Escape') closeGallery();
-    });
+// Prevent modal from closing when clicking modal content
+document.querySelector('.modal-content').addEventListener('click', function(e) {
+    e.stopPropagation();
+});
 </script>
-@endpush 
+@endsection 

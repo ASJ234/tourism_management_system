@@ -229,7 +229,7 @@
         <span class="booking-status status-{{ strtolower($booking->status) }}">
             {{ $booking->status }}
         </span>
-        <div class="booking-id">Booking ID: #{{ $booking->id }}</div>
+        <div class="booking-id">Booking ID: #{{ $booking->booking_id }}</div>
         <h1 class="booking-title">{{ $booking->package->name }}</h1>
         <div class="booking-meta">
             <div class="meta-item">
@@ -320,12 +320,19 @@
     @endif
 
     <div class="action-buttons">
-        <a href="{{ route('tourist.bookings') }}" class="btn btn-secondary">
+        <a href="{{ route('tourist.bookings.index') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i>
             Back to Bookings
         </a>
         
-        @if($booking->status === 'Pending' || $booking->status === 'Confirmed')
+        @if($booking->status === 'Confirmed' || $booking->status === 'Completed')
+            <a href="{{ route('tourist.bookings.download', $booking) }}" class="btn btn-primary">
+                <i class="fas fa-download"></i>
+                Download PDF
+            </a>
+        @endif
+        
+        <!-- @if($booking->status === 'Pending' || $booking->status === 'Confirmed')
             <form action="{{ route('tourist.bookings.cancel', $booking) }}" method="POST" class="d-inline">
                 @csrf
                 @method('PATCH')
@@ -334,7 +341,7 @@
                     Cancel Booking
                 </button>
             </form>
-        @endif
+        @endif -->
     </div>
 </div>
 @endsection 

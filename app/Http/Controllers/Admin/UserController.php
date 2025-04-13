@@ -7,9 +7,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Services\TourOperatorEmailService;
 
 class UserController extends Controller
 {
+    protected $tourOperatorEmailService;
+
+    public function __construct(TourOperatorEmailService $tourOperatorEmailService)
+    {
+        $this->tourOperatorEmailService = $tourOperatorEmailService;
+    }
+
     public function index(Request $request)
     {
         $query = User::query();
@@ -56,8 +64,18 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
             'contact_number' => $validated['contact_number'],
             'role' => $validated['role'],
-            'is_active' => $request->boolean('is_active', true),
+            'is_active' => $validated['is_active'] ?? true,
         ]);
+
+        // Send email if the user is a tour operator
+        if ($user->role === 'tour_operator') {
+            try {
+                $this->tourOperatorEmailService->sendRegistrationEmail($user);
+            } catch (\Exception $e) {
+                \Log::error('Failed to send tour operator registration email: ' . $e->getMessage());
+                // Continue with the registration even if email fails
+            }
+        }
 
         return redirect()->route('admin.users.index')
             ->with('success', 'User created successfully.');

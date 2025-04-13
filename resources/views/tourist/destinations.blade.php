@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('styles')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
     .destinations-container {
         padding: 2rem;
@@ -48,6 +49,12 @@
         width: 100%;
         height: 200px;
         object-fit: cover;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+
+    .destination-image:hover {
+        opacity: 0.9;
     }
 
     .destination-content {
@@ -136,6 +143,55 @@
         color: #6b7280;
         margin-bottom: 1rem;
     }
+
+    /* Updated Modal Styles */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        padding-top: 50px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.95);
+    }
+
+    .modal-content {
+        margin: auto;
+        display: block;
+        position: relative;
+        max-width: 90%;
+        max-height: 90vh;
+    }
+
+    .modal-image {
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 90vh;
+        margin: auto;
+        display: block;
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 35px;
+        top: 15px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10000;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+        color: #bbb;
+        text-decoration: none;
+        cursor: pointer;
+    }
 </style>
 @endsection
 
@@ -147,36 +203,37 @@
     </div>
 
     <div class="filters">
-        <select class="filter-select" id="region-filter">
+        <select class="filter-select" id="region-filter" name="region">
             <option value="">All Regions</option>
-            <option value="asia">Asia</option>
-            <option value="europe">Europe</option>
-            <option value="africa">Africa</option>
-            <option value="north-america">North America</option>
-            <option value="south-america">South America</option>
-            <option value="oceania">Oceania</option>
+            <option value="asia" {{ request('region') == 'asia' ? 'selected' : '' }}>Asia</option>
+            <option value="europe" {{ request('region') == 'europe' ? 'selected' : '' }}>Europe</option>
+            <option value="africa" {{ request('region') == 'africa' ? 'selected' : '' }}>Africa</option>
+            <option value="north-america" {{ request('region') == 'north-america' ? 'selected' : '' }}>North America</option>
+            <option value="south-america" {{ request('region') == 'south-america' ? 'selected' : '' }}>South America</option>
+            <option value="oceania" {{ request('region') == 'oceania' ? 'selected' : '' }}>Oceania</option>
         </select>
 
-        <select class="filter-select" id="price-filter">
+        <!-- <select class="filter-select" id="price-filter">
             <option value="">All Prices</option>
             <option value="budget">Budget Friendly</option>
             <option value="mid-range">Mid Range</option>
             <option value="luxury">Luxury</option>
-        </select>
+        </select> -->
     </div>
 
     <div class="destinations-grid">
         @forelse($destinations as $destination)
             <div class="destination-card">
-                <img src="{{ $destination->image_url ?? asset('images/placeholder.jpg') }}" 
+                <img src="{{ url($destination->image_url) }}" 
                      alt="{{ $destination->name }}" 
-                     class="destination-image">
+                     class="destination-image"
+                     onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
                 <div class="destination-content">
                     <h2 class="destination-name">{{ $destination->name }}</h2>
                     <p class="destination-description">{{ $destination->description }}</p>
                     <div class="destination-meta">
                         <div class="destination-price">
-                            From ${{ number_format($destination->packages->min('price'), 2) }}
+                            From ${{ number_format($destination->packages->min('price') ?? 0, 2) }}
                         </div>
                         @if($destination->reviews_count > 0)
                             <div class="destination-rating">
@@ -195,46 +252,79 @@
         @empty
             <div class="empty-state">
                 <i class="fas fa-map-marked-alt"></i>
-                <p>No destinations found. Please try adjusting your filters.</p>
+                <p>No destinations found in this region. Please try selecting a different region.</p>
             </div>
         @endforelse
     </div>
 
     <div class="mt-8">
-        {{ $destinations->links() }}
+        {{ $destinations->appends(request()->query())->links() }}
     </div>
 </div>
 
+<!-- Image Modal -->
+<div id="imageModal" class="image-modal" onclick="closeImageModal()">
+    <span class="close-modal">&times;</span>
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img id="modalImage" class="modal-image" src="" alt="">
+    </div>
+</div>
+@endsection
+
+@section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const regionFilter = document.getElementById('region-filter');
-    const priceFilter = document.getElementById('price-filter');
-
-    function applyFilters() {
-        const region = regionFilter.value;
-        const price = priceFilter.value;
+    // Region filter functionality
+    document.getElementById('region-filter').addEventListener('change', function() {
+        const selectedRegion = this.value;
+        const currentUrl = new URL(window.location.href);
         
-        // You can implement the filtering logic here
-        // For now, we'll just reload the page with the filter parameters
-        const params = new URLSearchParams(window.location.search);
-        
-        if (region) {
-            params.set('region', region);
+        if (selectedRegion) {
+            currentUrl.searchParams.set('region', selectedRegion);
         } else {
-            params.delete('region');
+            currentUrl.searchParams.delete('region');
         }
         
-        if (price) {
-            params.set('price', price);
-        } else {
-            params.delete('price');
-        }
+        window.location.href = currentUrl.toString();
+    });
 
-        window.location.search = params.toString();
+    // Image modal functionality
+    function openImageModal(imageSrc, imageAlt) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        
+        modal.style.display = "block";
+        modalImg.src = imageSrc;
+        modalImg.alt = imageAlt;
+        document.body.style.overflow = 'hidden';
     }
 
-    regionFilter.addEventListener('change', applyFilters);
-    priceFilter.addEventListener('change', applyFilters);
-});
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.style.display = "none";
+        document.body.style.overflow = 'auto';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Close modal when clicking the × symbol
+        const closeBtn = document.querySelector('.close-modal');
+        if (closeBtn) {
+            closeBtn.onclick = closeImageModal;
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
+        // Add click listener to all destination images
+        const images = document.querySelectorAll('.destination-image');
+        images.forEach(img => {
+            img.addEventListener('click', function() {
+                openImageModal(this.src, this.alt);
+            });
+        });
+    });
 </script>
 @endsection 

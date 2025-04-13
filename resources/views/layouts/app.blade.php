@@ -158,7 +158,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('tourist.destinations') }}">
+                                        <a class="nav-link" href="{{ route('tourist.destinations.index') }}">
                                             <i class="fas fa-map-marked-alt"></i> Destinations
                                         </a>
                                     </li>
@@ -168,7 +168,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('tourist.bookings') }}">
+                                        <a class="nav-link" href="{{ route('tourist.bookings.index') }}">
                                             <i class="fas fa-calendar-check"></i> My Bookings
                                         </a>
                                     </li>
@@ -255,6 +255,8 @@
             updateOnlineStatus();
         </script>
 
-        @yield('scripts')
+        <!-- Scripts -->
+        <script src="{{ asset('js/app.js') }}" defer></script>
+        @stack('scripts')
     </body>
 </html>

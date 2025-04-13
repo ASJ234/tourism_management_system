@@ -393,7 +393,7 @@
     </div>
 
     <div class="quick-actions">
-        <a href="{{ route('tourist.destinations') }}" class="action-card">
+        <a href="{{ route('tourist.destinations.index') }}" class="action-card">
             <div class="action-icon">
                 <i class="fas fa-map-marked-alt"></i>
             </div>
@@ -427,7 +427,7 @@
             <div class="content-card-header">
                 <h2>Recent Bookings</h2>
                 @if($recentBookings->count() > 0)
-                    <a href="{{ route('tourist.bookings') }}" class="btn btn-secondary">View All</a>
+                    <a href="{{ route('tourist.bookings.index') }}" class="btn btn-secondary">View All</a>
                 @endif
             </div>
             <div class="content-card-body">

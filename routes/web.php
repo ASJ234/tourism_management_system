@@ -8,6 +8,10 @@ use App\Http\Controllers\TourOperator\TourOperatorController;
 use App\Http\Controllers\Tourist\BookingController;
 use App\Http\Controllers\Tourist\PaymentController;
 use App\Http\Controllers\Tourist\DashboardController;
+use App\Http\Controllers\Tourist\BookingPdfController;
+use App\Http\Controllers\TestEmailController;
+use App\Http\Controllers\Tourist\DestinationController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -62,17 +66,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Tourist Routes
 Route::middleware(['auth', 'role:tourist'])->prefix('tourist')->name('tourist.')->group(function () {
     Route::get('/dashboard', [TouristController::class, 'dashboard'])->name('dashboard');
-    Route::get('/destinations', [TouristController::class, 'destinations'])->name('destinations');
-    Route::get('/destinations/{destination}', [TouristController::class, 'showDestination'])->name('destinations.show');
+    Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations.index');
+    Route::get('/destinations/{destination}', [DestinationController::class, 'show'])->name('destinations.show');
     Route::get('/packages', [TouristController::class, 'packages'])->name('packages');
     Route::get('/packages/{package}', [TouristController::class, 'showPackage'])->name('packages.show');
     
     // Bookings
-    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings');
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('bookings.create');
+    Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/create/{package}', [BookingController::class, 'create'])->name('bookings.create');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
     Route::get('/bookings/{booking}/view', [BookingController::class, 'show'])->name('bookings.show');
     Route::get('/bookings/{package}/book', [BookingController::class, 'showBookingForm'])->name('bookings.book');
+    Route::get('/bookings/{booking}/download', [BookingController::class, 'downloadPdf'])->name('bookings.download');
     
     // Reviews
     Route::get('/reviews', [TouristController::class, 'reviews'])->name('reviews');
@@ -120,4 +125,25 @@ Route::post('/test-booking', function(\Illuminate\Http\Request $request) {
 
 Route::delete('tourist/bookings/{booking_id}/cancel', [App\Http\Controllers\Tourist\BookingController::class, 'cancel'])
     ->name('tourist.bookings.cancel');
+
+// PDF Download Route
+Route::get('/bookings/{booking}/download-pdf', [BookingPdfController::class, 'download'])
+    ->name('bookings.download-pdf')
+    ->middleware('auth');
+
+// Test email route
+Route::get('/test-email', [TestEmailController::class, 'testEmail']);
+
+// Password Reset Routes (must be before auth.php)
+Route::middleware('guest')->group(function () {
+    Route::get('forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'showForgotForm'])
+        ->name('password.request');
+    Route::post('forgot-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'forgotPassword'])
+        ->name('password.email');
+    Route::get('reset-code', [App\Http\Controllers\Auth\PasswordResetController::class, 'showResetCodeForm'])
+        ->name('password.code');
+    Route::post('reset-password', [App\Http\Controllers\Auth\PasswordResetController::class, 'resetPassword'])
+        ->name('password.update');
+});
+
 require __DIR__.'/auth.php';

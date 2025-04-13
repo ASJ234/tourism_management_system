@@ -5,11 +5,19 @@ namespace App\Http\Controllers\Tourist;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\TourPackage;
+use App\Services\BookingPdfService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
+    protected $pdfService;
+
+    public function __construct(BookingPdfService $pdfService)
+    {
+        $this->pdfService = $pdfService;
+    }
+
     public function index()
     {
         $bookings = Booking::with(['package'])
@@ -140,5 +148,27 @@ class BookingController extends Controller
         }
 
         return view('tourist.bookings.create', compact('package'));
+    }
+
+    public function downloadPdf(Booking $booking)
+    {
+        // Verify the booking belongs to the authenticated user
+        if ($booking->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            // Generate PDF
+            $pdfContent = $this->pdfService->generateBookingPdf($booking);
+
+            // Return the PDF as a download response
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="booking_confirmation_' . $booking->id . '.pdf"');
+        } catch (\Exception $e) {
+            \Log::error('PDF Generation Error: ' . $e->getMessage());
+            return redirect()->route('tourist.bookings.show', $booking)
+                           ->with('error', 'Failed to generate PDF: ' . $e->getMessage());
+        }
     }
 }

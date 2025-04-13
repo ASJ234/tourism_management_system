@@ -59,7 +59,12 @@ class TourPackage extends Model
 
     public function images()
     {
-        return $this->hasMany(TourPackageImage::class, 'package_id', 'package_id');
+        return $this->hasMany(TourPackageImage::class, 'package_id');
+    }
+
+    public function getPrimaryImageAttribute()
+    {
+        return $this->images()->where('is_primary', true)->first();
     }
 
     public function reviews()
