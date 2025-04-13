@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Destination;
-use App\Models\Service;
 use App\Models\Booking;
 use App\Models\ActivityLog;
 use App\Models\Review;
@@ -25,8 +24,9 @@ class AdminController extends Controller
         $data = [
             'totalUsers' => User::count(),
             'totalDestinations' => Destination::count(),
-            'totalServices' => Service::count(),
             'totalBookings' => Booking::count(),
+            'paidBookings' => Booking::where('payment_status', 'Paid')->count(),
+            'pendingBookings' => Booking::where('payment_status', 'Unpaid')->count(),
             'recentActivities' => ActivityLog::with(['user' => function($query) {
                 $query->select('user_id', 'full_name', 'username');
             }])->latest()->take(5)->get(),
@@ -214,33 +214,46 @@ class AdminController extends Controller
                     \Log::error('Failed to move file:', ['filename' => $filename]);
                 }
             }
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true, 
+                    'message' => count($uploadedImages) . ' image(s) uploaded successfully',
+                    'images' => $uploadedImages
+                ]);
+            }
     
-            return response()->json([
-                'success' => true, 
-                'message' => count($uploadedImages) . ' image(s) uploaded successfully',
-                'images' => $uploadedImages
-            ]);
+            return back()->with('success', count($uploadedImages) . ' image(s) uploaded successfully');
     
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Upload Validation Errors:', [
                 'errors' => $e->errors()
             ]);
     
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+
+            return back()->withErrors($e->errors())->withInput();
+
         } catch (\Exception $e) {
             \Log::error('Image Upload Exception: ', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
     
-            return response()->json([
-                'success' => false,
-                'message' => 'Upload failed: ' . $e->getMessage()
-            ], 500);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Upload failed: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->with('error', 'Upload failed: ' . $e->getMessage());
         }
     }
 

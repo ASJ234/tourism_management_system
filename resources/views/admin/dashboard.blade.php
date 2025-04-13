@@ -54,12 +54,29 @@
             <div class="card glass-card h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
+                        <div class="avatar-circle me-3 bg-success">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <h6 class="card-subtitle mb-2 text-muted">Paid Bookings</h6>
+                            <h3 class="card-title mb-0">{{ $paidBookings ?? 0 }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card glass-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
                         <div class="avatar-circle me-3">
                             <i class="fas fa-calendar-check"></i>
                         </div>
                         <div>
                             <h6 class="card-subtitle mb-2 text-muted">Total Bookings</h6>
                             <h3 class="card-title mb-0">{{ $totalBookings ?? 0 }}</h3>
+                            <small class="text-muted">{{ $pendingBookings ?? 0 }} pending</small>
                         </div>
                     </div>
                 </div>

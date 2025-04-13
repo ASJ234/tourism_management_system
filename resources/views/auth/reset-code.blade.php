@@ -8,6 +8,12 @@
                 <div class="card-header">{{ __('Reset Password') }}</div>
 
                 <div class="card-body">
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
                     @if (session('error'))
                         <div class="alert alert-danger" role="alert">
                             {{ session('error') }}
@@ -17,15 +23,16 @@
                     <form method="POST" action="{{ route('password.update') }}">
                         @csrf
 
-                        <input type="hidden" name="token" value="{{ $token }}">
+                        <input type="hidden" name="email" value="{{ session('email') }}">
 
                         <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email Address') }}</label>
+                            <label for="code" class="col-md-4 col-form-label text-md-end">{{ __('Reset Code') }}</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                <input id="code" type="text" class="form-control @error('code') is-invalid @enderror" name="code" required autofocus>
+                                <small class="form-text text-muted">Enter the 6-digit code sent to your email</small>
 
-                                @error('email')
+                                @error('code')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -37,7 +44,7 @@
                             <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('New Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
 
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
@@ -51,7 +58,7 @@
                             <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
 
@@ -68,4 +75,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection 
