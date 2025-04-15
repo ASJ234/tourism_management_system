@@ -29,7 +29,8 @@ class TourPackage extends Model
         'created_by',
         'discount_percentage',
         'promotion_start_date',
-        'promotion_end_date'
+        'promotion_end_date',
+        'bookings_count'
     ];
 
     protected $casts = [
@@ -71,5 +72,12 @@ class TourPackage extends Model
     public function inclusions(): HasMany
     {
         return $this->hasMany(PackageInclusion::class, 'package_id');
+    }
+
+    public function updateBookingsCount(): void
+    {
+        $this->update([
+            'bookings_count' => $this->bookings()->count()
+        ]);
     }
 } 

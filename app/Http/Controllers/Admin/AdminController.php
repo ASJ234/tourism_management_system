@@ -9,9 +9,11 @@ use App\Models\Service;
 use App\Models\Booking;
 use App\Models\ActivityLog;
 use App\Models\Review;
+use App\Models\TourPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -248,15 +250,53 @@ class AdminController extends Controller
     {
         $image = $destination->images()->findOrFail($imageId);
         
-        // Delete the physical file
+        // Delete the image file
         if (file_exists(public_path($image->image_path))) {
             unlink(public_path($image->image_path));
         }
         
-        // Delete the database record
         $image->delete();
-
+        
         return redirect()->back()->with('success', 'Image deleted successfully.');
+    }
+
+    public function analysisdestinations()
+    {
+        $data = [
+            'totalDestinations' => Destination::getTotalDestinationsCount(),
+            'destinationsByRegion' => Destination::getDestinationsByRegion(),
+            'activeDestinations' => Destination::getActiveDestinationsCount(),
+            'inactiveDestinations' => Destination::getInactiveDestinationsCount(),
+            'destinationsWithMostImages' => Destination::getDestinationsWithMostImages(),
+            'recentDestinations' => Destination::getRecentDestinationsCount(),
+            'touristStatistics' => Destination::getTouristStatistics(),
+            'paymentStatistics' => Destination::getPaymentStatistics(),
+            'packageStatistics' => Destination::getPackagePerformanceStatistics()
+        ];
+        
+        return view('admin.destinations.analysis', $data);
+    }
+
+    public function touristStatistics()
+    {
+        $statistics = Destination::getTouristStatistics();
+        $payments = Destination::getPaymentStatistics();
+        $packages = Destination::getPackagePerformanceStatistics();
+
+        return view('admin.destinations.tourist-statistics', [
+            'statistics' => $statistics,
+            'years' => $statistics->pluck('year'),
+            'touristCounts' => $statistics->pluck('total_tourists'),
+            'paymentStatistics' => $payments,
+            'paymentAmounts' => $payments->pluck('total_amount'),
+            'packageStatistics' => $packages,
+            'packageCounts' => $packages['performance_data']->pluck('total_packages'),
+            'bookingCounts' => $packages['performance_data']->pluck('total_bookings'),
+            'revenueData' => $packages['performance_data']->pluck('total_revenue'),
+            'averagePrices' => $packages['performance_data']->map(function($item) {
+                return $item->total_revenue / ($item->total_bookings ?: 1);
+            })
+        ]);
     }
 
     public function services()
@@ -301,5 +341,56 @@ class AdminController extends Controller
 
         return redirect()->route('admin.settings')
             ->with('success', 'Settings updated successfully.');
+    }
+
+    public function packagePerformance(TourPackage $package)
+    {
+        // Get monthly performance data
+        $monthlyData = DB::table('bookings')
+            ->where('package_id', $package->package_id)
+            ->select(
+                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                DB::raw('COUNT(*) as bookings_count'),
+                DB::raw('SUM(total_price) as revenue')
+            )
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Get package summary data
+        $package->load(['destination', 'bookings']);
+        $package->bookings_count = $package->bookings->count();
+        $package->total_revenue = $package->bookings->sum('total_price');
+
+        return view('admin.packages.performance', compact('package', 'monthlyData'));
+    }
+
+    public function monthlyBookingsAndRevenue()
+    {
+        // Get monthly bookings and revenue data
+        $monthlyData = \DB::table('bookings')
+            ->select(
+                \DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
+                \DB::raw('COUNT(*) as bookings_count'),
+                \DB::raw('SUM(total_price) as revenue')
+            )
+            ->groupBy('month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Get package-wise monthly data
+        $packageMonthlyData = \DB::table('bookings')
+            ->join('tour_packages', 'bookings.package_id', '=', 'tour_packages.package_id')
+            ->select(
+                'tour_packages.name as package_name',
+                \DB::raw('DATE_FORMAT(bookings.created_at, "%Y-%m") as month'),
+                \DB::raw('COUNT(*) as bookings_count'),
+                \DB::raw('SUM(bookings.total_price) as revenue')
+            )
+            ->groupBy('package_name', 'month')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        return view('admin.packages.monthly', compact('monthlyData', 'packageMonthlyData'));
     }
 } 

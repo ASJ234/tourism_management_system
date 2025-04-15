@@ -392,8 +392,30 @@
     /* Table Styles */
     .table {
         margin-bottom: 0;
+        background: white;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
+    .table-responsive {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        background: white;
+    }
+ .table thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        padding: 1rem;
+        border-bottom: 2px solid #dee2e6;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
     .table th {
         font-weight: 600;
         text-transform: uppercase;
@@ -401,8 +423,19 @@
         letter-spacing: 0.5px;
     }
 
-    .table td {
+    .table tbody td {
+        padding: 1rem;
         vertical-align: middle;
+        border-bottom: 1px solid #f0f0f0;
+        color: #495057;
+        transition: all 0.2s ease;
+    }
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .table tbody tr:hover td {
+        background-color: #f8f9fa;
     }
 
     /* Button Styles */

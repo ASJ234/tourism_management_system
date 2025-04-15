@@ -8,14 +8,18 @@ use App\Http\Controllers\TourOperator\TourOperatorController;
 use App\Http\Controllers\Tourist\BookingController;
 use App\Http\Controllers\Tourist\PaymentController;
 use App\Http\Controllers\Tourist\DashboardController;
-use App\Http\Controllers\landingpageController;
+use App\Http\Controllers\Navbar\NavbarController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/landingpage/contact', [landingpageController::class,'contact'])->name('landingpage.contact');
-Route::get('/landingpage/about', [landingpageController::class,'about'])->name('landingpage.about');
+
+Route::prefix('navbar')->name('navbar.')->group(function () {
+    Route::get('/about', [NavbarController::class, 'about'])->name('about');
+    Route::get('/contact', [NavbarController::class, 'contact'])->name('contact');
+});
+
 Route::get('/dashboard', function () {
     $user = auth()->user();
     
@@ -41,6 +45,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     
     Route::get('/destinations', [AdminController::class, 'destinations'])->name('destinations');
+    Route::get('/destinations/analysis', [AdminController::class, 'analysisdestinations'])->name('destinations.analysis');
+    Route::get('/destinations/tourist-statistics', [AdminController::class, 'touristStatistics'])->name('destinations.tourist-statistics');
     Route::get('/destinations/create', [AdminController::class, 'createDestination'])->name('destinations.create');
     Route::post('/destinations', [AdminController::class, 'storeDestination'])->name('destinations.store');
     Route::get('/destinations/{destination}/edit', [AdminController::class, 'editDestination'])->name('destinations.edit');
@@ -60,6 +66,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/reviews', [AdminController::class, 'reviews'])->name('reviews');
     Route::get('/activities', [AdminController::class, 'activities'])->name('activities');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+    Route::get('/packages/{package}/performance', [AdminController::class, 'packagePerformance'])->name('packages.performance');
+    Route::get('/packages/monthly', [AdminController::class, 'monthlyBookingsAndRevenue'])->name('packages.monthly');
 });
 
 // Tourist Routes

@@ -1,80 +1,200 @@
-@extends('layouts.guest')
+@extends('layouts.main')
+
+@section('styles')
+<style>
+    .login-page-container {
+        min-height: 100vh;
+        background-image: url('{{ asset('images/slider/bus1.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-container {
+        max-width: 400px;
+        width: 100%;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2em;
+    }
+
+    .login-header h1 {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 90%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: rgb(19, 105, 16);
+        box-shadow: 0 0 0 3px rgba(19, 105, 16, 0.1);
+    }
+
+    .login-button {
+        width: 100%;
+        padding: 0.75rem;
+        background: rgb(19, 105, 16);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .login-button:hover {
+        background: rgb(22, 128, 19);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(19, 105, 16, 0.2);
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .register-link a, .forgot-password {
+        color: rgb(19, 105, 16);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .register-link a:hover, .forgot-password:hover {
+        color: rgb(22, 128, 19);
+        text-decoration: underline;
+    }
+
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        background: rgba(254, 226, 226, 0.9);
+        color: #dc2626;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgb(19, 105, 16);
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+
+    .input-with-icon input {
+        padding-left: 2.5rem;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+    }
+
+    .remember-me input[type="checkbox"] {
+        width: auto;
+        margin-right: 0.5rem;
+    }
+
+    .forgot-password {
+        display: block;
+        text-align: right;
+        margin-top: 0.5rem;
+    }
+</style>
+@endsection
 
 @section('content')
-<div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gradient-to-br from-indigo-100 to-white">
-    <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white shadow-xl overflow-hidden sm:rounded-lg">
-        <div class="flex justify-center mb-8">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-indigo-600" />
-            </a>
+<div class="login-page-container">
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue your journey</p>
         </div>
 
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
+        @if ($errors->any())
+            <div class="alert">
+                <ul style="margin: 0; padding-left: 1rem;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
 
             <!-- Email/Username -->
-            <div>
-                <label for="login" class="block text-sm font-medium text-gray-700">Email or Username</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                        </svg>
-                    </div>
-                    <input id="login" type="text" name="login" value="{{ old('login') }}" required autofocus
-                        class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <div class="form-group">
+                <label for="login">Email or Username</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="login" name="login" value="{{ old('login') }}" required autofocus>
                 </div>
             </div>
 
             <!-- Password -->
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <div class="mt-1 relative rounded-md shadow-sm">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <input id="password" type="password" name="password" required autocomplete="current-password"
-                        class="pl-10 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" required>
                 </div>
+                <a class="forgot-password" href="{{ route('password.request') }}">
+                    Forgot your password?
+                </a>
             </div>
 
             <!-- Remember Me -->
-            <div class="flex items-center justify-between">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" name="remember"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
-                        Forgot your password?
-                    </a>
-                @endif
+            <div class="remember-me">
+                <input type="checkbox" id="remember_me" name="remember">
+                <label for="remember_me">Remember me</label>
             </div>
 
-            <div>
-                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out">
-                    Log in
-                </button>
-            </div>
+            <button type="submit" class="login-button">
+                Sign In
+            </button>
 
-            <div class="text-center">
-                <p class="text-sm text-gray-600">
-                    Don't have an account?
-                    <a href="{{ route('register') }}" class="font-medium text-indigo-600 hover:text-indigo-900">
-                        Register now
-                    </a>
-                </p>
+            <div class="register-link">
+                Don't have an account? <a href="{{ route('register') }}">Register now</a>
             </div>
         </form>
     </div>

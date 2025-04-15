@@ -324,17 +324,6 @@
             <i class="fas fa-arrow-left"></i>
             Back to Bookings
         </a>
-        
-        @if($booking->status === 'Pending' || $booking->status === 'Confirmed')
-            <form action="{{ route('tourist.bookings.cancel', $booking) }}" method="POST" class="d-inline">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
-                    <i class="fas fa-times"></i>
-                    Cancel Booking
-                </button>
-            </form>
-        @endif
     </div>
 </div>
 @endsection 

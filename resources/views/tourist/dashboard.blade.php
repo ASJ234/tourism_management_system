@@ -24,73 +24,57 @@
     }
 
     .welcome-banner {
-        background: linear-gradient(120deg, #2563eb, #4f46e5);
-        border-radius: 1.5rem;
-        padding: 3rem;
-        margin-bottom: 2.5rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 10px 20px rgba(37, 99, 235, 0.1);
-    }
-
-    .welcome-banner::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 300px;
-        height: 100%;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.1)"/></svg>') no-repeat center center;
-        opacity: 0.6;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        border: 1px solid #dee2e6;
     }
 
     .welcome-banner h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 1rem;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #495057;
+        font-weight: 600;
+        margin: 0;
     }
 
     .welcome-banner p {
-        font-size: 1.25rem;
-        color: rgba(255,255,255,0.9);
-        max-width: 600px;
-        line-height: 1.6;
+        font-size: 0.9rem;
+        margin: 0;
     }
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .stat-card {
         background: var(--card-bg);
-        border-radius: 1rem;
-        padding: 1.5rem;
+        border-radius: 8px;
+        padding: 1rem;
         display: flex;
         align-items: center;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         border: 1px solid var(--border-color);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         border-color: var(--primary-color);
     }
 
     .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 1rem;
-        font-size: 1.5rem;
+        margin-right: 0.75rem;
+        font-size: 1.25rem;
     }
 
     .stat-icon.blue {
@@ -113,70 +97,73 @@
     }
 
     .stat-number {
-        font-size: 1.875rem;
-        font-weight: 700;
+        font-size: 1.25rem;
+        font-weight: 600;
         color: var(--text-primary);
         line-height: 1.2;
     }
 
     .stat-label {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: var(--text-secondary);
-        margin-top: 0.25rem;
+        margin-top: 0.125rem;
     }
 
     .quick-actions {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
     }
 
     .action-card {
         background: var(--card-bg);
-        border-radius: 1rem;
-        padding: 2rem;
+        border-radius: 8px;
+        padding: 1rem;
         text-align: left;
-        transition: all 0.3s ease;
+        transition: all 0.2s ease;
         border: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         text-decoration: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
 
     .action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         border-color: var(--primary-color);
     }
 
     .action-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
         background: rgba(37, 99, 235, 0.1);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 1.5rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
     }
 
     .action-icon i {
-        font-size: 1.75rem;
+        font-size: 1.25rem;
         color: var(--primary-color);
     }
 
     .action-content h3 {
-        font-size: 1.25rem;
+        font-size: 0.875rem;
         font-weight: 600;
         color: var(--text-primary);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
     }
 
     .action-content p {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         color: var(--text-secondary);
-        line-height: 1.5;
+        line-height: 1.4;
+        margin: 0;
     }
 
     .main-content {
@@ -353,12 +340,181 @@
             font-size: 2rem;
         }
 
-        .stat-card {
-            padding: 1.25rem;
+        .stats-grid,
+        .quick-actions {
+            grid-template-columns: 1fr;
         }
 
+        .stat-card,
         .action-card {
-            padding: 1.5rem;
+            padding: 0.875rem;
+        }
+    }
+
+    /* Recent Bookings Section */
+    .recent-bookings {
+        background: var(--card-bg);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+
+    .bookings-header {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #f8f9fa;
+    }
+
+    .bookings-header h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .bookings-header h3 i {
+        color: var(--primary-color);
+    }
+
+    .bookings-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .booking-item {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .booking-item:last-child {
+        border-bottom: none;
+    }
+
+    .booking-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .booking-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: rgba(37, 99, 235, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .booking-icon i {
+        font-size: 1rem;
+        color: var(--primary-color);
+    }
+
+    .booking-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .booking-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .booking-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    .booking-date {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .booking-date i {
+        font-size: 0.75rem;
+    }
+
+    .booking-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        gap: 0.25rem;
+    }
+
+    .booking-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .btn-view {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+    .btn-view:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .empty-bookings {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+
+    .empty-bookings i {
+        font-size: 2rem;
+        color: #d1d5db;
+        margin-bottom: 1rem;
+    }
+
+    .empty-bookings p {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .booking-item {
+            flex-wrap: wrap;
+        }
+
+        .booking-actions {
+            width: 100%;
+            justify-content: flex-end;
+            margin-top: 0.5rem;
         }
     }
 </style>
@@ -367,8 +523,12 @@
 @section('content')
 <div class="dashboard-container">
     <div class="welcome-banner">
-        <h1>Welcome back, {{ auth()->user()->full_name }}! 👋</h1>
-        <p>Ready to explore new destinations? Browse our curated collection of amazing travel experiences and plan your next unforgettable journey.</p>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h1 class="h4 mb-1">Welcome back, {{ auth()->user()->full_name }}! 👋</h1>
+                <p class="text-muted mb-0">Ready to explore new destinations? Browse our curated collection of amazing travel experiences.</p>
+            </div>
+        </div>
     </div>
 
     <div class="stats-grid">
@@ -432,32 +592,47 @@
             </div>
             <div class="content-card-body">
                 @if($recentBookings->count() > 0)
-                    <ul class="booking-list">
-                        @foreach($recentBookings as $booking)
-                            <li class="booking-item">
-                                <div class="item-icon">
-                                    <i class="fas fa-suitcase"></i>
-                                </div>
-                                <div class="item-details">
-                                    <h4>{{ $booking->package->name }}</h4>
-                                    <p>{{ $booking->start_date->format('M d, Y') }}</p>
-                                    <span class="status-badge status-{{ strtolower($booking->status) }}">
-                                        <i class="fas fa-circle text-xs"></i>
-                                        {{ $booking->status }}
-                                    </span>
-                                </div>
-                                <a href="{{ route('tourist.bookings.show', $booking) }}" class="btn btn-primary">
-                                    <i class="fas fa-eye"></i> View
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    <div class="recent-bookings">
+                        <div class="bookings-header">
+                            <h3><i class="fas fa-calendar-check"></i>Recent Bookings</h3>
+                        
+                        </div>
+                        <div class="bookings-body">
+                            <ul class="bookings-list">
+                                @foreach($recentBookings as $booking)
+                                    <li class="booking-item">
+                                        <div class="booking-icon">
+                                            <i class="fas fa-suitcase"></i>
+                                        </div>
+                                        <div class="booking-details">
+                                            <div class="booking-title">{{ $booking->package->name }}</div>
+                                            <div class="booking-meta">
+                                                <div class="booking-date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    {{ $booking->start_date->format('M d, Y') }}
+                                                </div>
+                                                <span class="booking-status status-{{ strtolower($booking->status) }}">
+                                                    <i class="fas fa-circle text-xs"></i>
+                                                    {{ $booking->status }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="booking-actions">
+                                            <a href="{{ route('tourist.bookings.show', $booking) }}" class="btn-sm btn-view">
+                                                <i class="fas fa-eye"></i>View
+                                            </a>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 @else
-                    <div class="empty-state">
+                    <div class="empty-bookings">
                         <i class="fas fa-calendar-times"></i>
                         <p>No bookings yet. Start by browsing our amazing tour packages!</p>
-                        <a href="{{ route('tourist.packages') }}" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Browse Packages
+                        <a href="{{ route('tourist.packages') }}" class="btn-sm btn-view">
+                            <i class="fas fa-plus"></i>Browse Packages
                         </a>
                     </div>
                 @endif

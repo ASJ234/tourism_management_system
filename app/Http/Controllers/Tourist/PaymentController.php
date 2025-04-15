@@ -73,7 +73,12 @@ class PaymentController extends Controller
                         'payment_status' => 'Paid'
                     ]);
                     
-                    \Log::info('Booking updated:', ['booking_id' => $booking->booking_id, 'status' => 'Confirmed']);
+                    \Log::info('Booking updated:', [
+                        'booking_id' => $booking->booking_id,
+                        'status' => 'Confirmed',
+                        'payment_status' => 'Paid',
+                        'total_price' => $booking->total_price
+                    ]);
                     
                     // Commit the transaction
                     \DB::commit();

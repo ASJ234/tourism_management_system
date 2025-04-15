@@ -152,17 +152,23 @@ class TourOperatorController extends Controller
 
     public function bookings()
     {
+        $paidBookingsCount = Booking::whereHas('package', function($query) {
+            $query->where('created_by', auth()->id());
+        })
+        ->where('payment_status', 'Paid')
+        ->count();
+
         $bookings = Booking::whereHas('package', function($query) {
             $query->where('created_by', auth()->id());
         })
         ->with(['package', 'user' => function($query) {
             $query->select('user_id', 'full_name', 'email');
         }])
-        
+        ->where('payment_status', 'Paid')
         ->latest('booking_date')
         ->paginate(10);
 
-        return view('tour_operator.bookings.index', compact('bookings'));
+        return view('tour_operator.bookings.index', compact('bookings', 'paidBookingsCount'));
     }
 
     public function showBooking(Booking $booking)

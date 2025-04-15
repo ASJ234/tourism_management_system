@@ -56,7 +56,11 @@
                             <i class="fas fa-images me-2"></i>Manage Images
                         </a>
                     </li>
-                    
+                    <li class="{{ request()->routeIs('admin.destinations.all-images') ? 'active' : '' }}">
+                        <a href="{{ route('admin.destinations.analysis') }}" class="text-white text-decoration-none">
+                            <i class="fas fa-bar-chart"></i>Analytics
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
